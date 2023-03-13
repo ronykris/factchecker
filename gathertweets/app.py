@@ -132,6 +132,9 @@ def getUserTimeline(screename):
 def getTweets():
     args = request.args
     url = args.get('tweet')
+    if url is None:
+        raise KeyError('tweet URL not provided as query parameter')
+    
     tweetID = url.split('/')[-1]
     #url.split('/')[-1].split('?')[0]
     user = getSrcTweetDetails(tweetID)['user']  
