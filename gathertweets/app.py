@@ -4,6 +4,9 @@ from flask import Flask, request
 import os
 import json
 from datetime import datetime
+from utils import cleanup, getEmbeddings
+import time
+import asyncio
 
 load_dotenv()
 
@@ -49,7 +52,7 @@ def getSrcTweetDetails(tweetid):
     
     # Store the tweet details in a dictionary.
     srctweet = {}
-    srctweet['text'] = tweet.full_text
+    srctweet['text'] = cleanup(tweet.full_text)
     srctweet['id'] = tweet.id
     srctweet['user'] = tweet.user.screen_name
     srctweet['created_at'] = tweet.created_at
@@ -65,6 +68,16 @@ def save_dict_to_jsonl(dict_to_save, file_path):
     with open(file_path, 'a') as outfile:
         json.dump(dict_to_save, outfile)
         outfile.write('\n')
+
+def extractFromTweet(tweet):
+    dataset = {}
+    tweettext = cleanup(tweet.full_text)
+    dataset['text'] = tweettext        
+    dataset['user'] = tweet.user.screen_name
+    dataset['id'] = tweet.id
+    dataset['created_at'] = str(tweet.created_at)        
+    dataset['embedding'] = getEmbeddings(tweettext)
+    return dataset
 
 
 """
@@ -108,21 +121,21 @@ def getUserTimeline(screename):
 
     # Initialize an empty list to store the tweet details.
     dataarray = []
-
+    i = 0
     # Iterate over each tweet and extract its details.
-    for tweet in tweets:
-        dataset = {}
-        dataset['text'] = tweet.full_text
-        dataset['user'] = tweet.user.screen_name
-        dataset['id'] = tweet.id
-        dataset['created_at'] = str(tweet.created_at)
-        dataarray.append(dataset)
-
+    for tweet in tweets:               
+        data = {}
+        i += 1
+        print(i)
+        if ( i % 100 == 0 ):
+            time.sleep(60)
+        data = extractFromTweet(tweet)
+        dataarray.append(data)
         # Save the tweet details to a JSON Lines file with the user's screen name in the filename.
-        save_dict_to_jsonl(dataset, f'./data_{tweet.user.screen_name}.jsonl')
+        save_dict_to_jsonl(data, f'./data_{tweet.user.screen_name}.jsonl')        
     
     # Print the number of tweets retrieved.
-    print(f'Tweets retruned : {str(len(tweets))}')
+    print(f'Tweets returned : {str(len(tweets))}')
 
     # Return the list of tweet details.
     return dataarray

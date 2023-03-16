@@ -47,6 +47,10 @@ w3lib = "==1.22.0"
 tweepy = "*"
 flask = "*"
 python-dotenv = "*"
+cohere = "*"
+transformers = "*"
+pandas = "*"
+asyncio = "*"
 
 [dev-packages]
 

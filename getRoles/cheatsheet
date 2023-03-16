@@ -1,0 +1,24 @@
+Use tweet of interest to identify
+- user, time
+Build dataset on user's tweet timeline
+- past and present tweets
+Create vector embeddings of the tweet:
+- Text
+- Entities : Name, Organization, Location
+- Relations
+- Subject
+
+Use Cosine Similarity to create a cluster of similar tweets (compare text vector)
+
+Compare entity, relation, subject embedding of tweet with the cluster.
+
+if (similarity > 0.8): //tunable value
+    consistent;
+else :
+    inconsistent;
+
+As part of the report we could show:
+if consistent / inconsistent
+- show the consistency value
+- and the threads/tweets to support it
+

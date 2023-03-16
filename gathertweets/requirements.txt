@@ -1,0 +1,6 @@
+flask
+tweepy
+python-dotenv
+numpy
+cohere
+pandas
