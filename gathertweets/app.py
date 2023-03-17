@@ -4,7 +4,7 @@ from flask import Flask, request
 import os
 import json
 from datetime import datetime
-from utils import cleanup, getEmbeddings
+from utility import cleanup, getEmbeddings, performSRL
 import time
 import asyncio
 
@@ -114,7 +114,7 @@ def getUserTimeline(screename):
     # Retrieve the most recent 300 tweets from the user's timeline.
     tweets = api.user_timeline(screen_name=screename, 
         # 200 is the maximum allowed count
-        count=300,
+        count=200,
         include_rts = False,
         tweet_mode = 'extended' #for full text
     )
@@ -129,7 +129,7 @@ def getUserTimeline(screename):
         print(i)
         if ( i % 100 == 0 ):
             time.sleep(60)
-        data = extractFromTweet(tweet)
+        data = extractFromTweet(tweet)        
         dataarray.append(data)
         # Save the tweet details to a JSON Lines file with the user's screen name in the filename.
         save_dict_to_jsonl(data, f'./data_{tweet.user.screen_name}.jsonl')        
@@ -138,7 +138,7 @@ def getUserTimeline(screename):
     print(f'Tweets returned : {str(len(tweets))}')
 
     # Return the list of tweet details.
-    return dataarray
+    return f'Tweets prcoessed : {str(len(tweets))}'
 
 
 @app.get('/tweets')
