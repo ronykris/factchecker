@@ -4,9 +4,13 @@ from utility import cleanup, getEmbeddings, performSRL
 #cleanup(txt)
 #srl = performSRL(txt)
 srl = {'entities': [{'name': '@POTUS', 'type': 'person'}, {'name': '@AlboMP', 'type': 'person'}, {'name': '@RishiSunak', 'type': 'person'}], 'relation': ['announced steps to carry forward the Australia – U.K. – U.S. Partnership', 'Developing Australia’s conventionally-armed, nuclear-powered submarine capacity and our own will enhance stability in the Indo-Pacific.'], 'subject': '@POTUS'}
+
 names = list(map(lambda entity: entity['name'], filter(lambda entity: entity['type'] == 'person' or entity['type'] == 'location' or entity['type'] == 'organisation', srl['entities'])))
+
 subject = srl['subject']
+
 relation = srl['relation']
+
 names_vec = []
 for name in names:
     names_vec.append(getEmbeddings(name))
